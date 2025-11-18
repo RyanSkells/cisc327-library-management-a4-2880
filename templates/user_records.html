@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📃 User Records</h2>
+<p>View your borrow records.</p>
+
+<form method="GET" action="{{ url_for('record.user_records') }}">
+    <div class="form-group">
+        <label for="q">User ID</label>
+        <input type="text" id="q" name="q" value="{{ user_id }}" required>
+        <small style="color: #666;">Enter User ID</small>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn">View Records</button>
+        <a href="{{ url_for('catalog.catalog') }}" class="btn" style="margin-left: 10px;">View All Books</a>
+    </div>
+</form>
+
+{% if patron_id %}
+    <hr style="margin: 30px 0;">
+
+    {% if borrowed_books %}
+    <h3>Currently Borrowed Books for "{{ patron_id }}" </h3>
+    <h4>Total number of borrowed books: {{ borrowed_count }}</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in borrowed_books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.borrow_date.date() }}</td>
+                    <td>{{ book.due_date.date() }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% endif %}
+    <hr style="margin: 30px 0;">
+    {% if total_fee %}
+        <h3>Total Late Fees owed: {{ "%.2f"|format(total_fee) }}</h3>
+    {% else %}
+        <h3>No Late Fees owed.</h3>
+    {% endif %}
+    <hr style="margin: 30px 0;">
+    {% if records %}
+    <h3>Borrow Records for "{{ patron_id }}" </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.book_id }}</td>
+                    <td>{{ record.borrow_date.date() }}</td>
+                    <td>{{ record.due_date.date() }}</td>
+                    <td>{% if record.return_date %}
+                            {{ record.return_date.date() }}
+                        {% else %}
+                            {{ record.return_date }}
+                        {% endif %}                 </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <h4>No user records found</h4>
+            <p>No records exist for that user ID. Ensure the ID is correct.</p>
+        </div>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
