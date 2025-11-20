@@ -107,7 +107,7 @@ def borrow_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
 
     return True, f'Successfully borrowed "{book["title"]}". Due date: {due_date.strftime("%Y-%m-%d")}.'
 
-def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, float]:
+def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, str]:
     """
     Process book return by a patron. If patron checked out multiple of one book, return the earlier book
 
@@ -148,8 +148,8 @@ def return_book_by_patron(patron_id: str, book_id: int) -> Tuple[bool, float]:
         late_fee = calculate_late_fee_for_book(patron_id, book_id)
     else:
         late_fee = {'fee_amount': 0.0}
-
-    return True, late_fee['fee_amount']
+    message = "Fee amount: " + str(late_fee['fee_amount'])
+    return True, message
 
 def calculate_late_fee_for_book(patron_id: str, book_id: int) -> Dict:
     """
